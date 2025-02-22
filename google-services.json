@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1022142592627",
+    "project_id": "caps-a2e27",
+    "storage_bucket": "caps-a2e27.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1022142592627:android:fbf8d019d34e1e27881c06",
+        "android_client_info": {
+          "package_name": "com.example.cap"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDppzmpp1mcfZTdBk_KMXygyKhK4tyz0Po"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

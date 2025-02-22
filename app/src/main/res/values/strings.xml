@@ -1,0 +1,14 @@
+<resources>
+    <string name="app_name">Capstone</string>
+    <string name="signInWGoogle">Continue with Google</string>
+    <string name="forgotPassword">Forgot Password?</string>
+    <string name="signuptext">Sign up</string>
+    <string name="enterEmailFP">Enter the email address you registered with and we\'ll send you instructions on how to reset your password</string>
+    <string name="title_activity_home">home</string>
+    <string name="title_home">Home</string>
+    <string name="title_dashboard">Dashboard</string>
+    <string name="title_notifications">Notifications</string>
+    <string name="title_profile">Profile</string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+</resources>

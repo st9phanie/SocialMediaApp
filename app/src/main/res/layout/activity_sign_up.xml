@@ -100,7 +100,7 @@
         android:layout_centerVertical="true"
         android:paddingStart="20dp"
         android:layout_toLeftOf="@id/orText"
-        android:background="@color/gray"
+        android:background="@color/gray75"
         />
 
     <View
@@ -111,7 +111,7 @@
         android:layout_centerVertical="true"
         android:paddingEnd="20dp"
         android:layout_toRightOf="@id/orText"
-        android:background="@color/gray"
+        android:background="@color/gray75"
         />
 
     <Button

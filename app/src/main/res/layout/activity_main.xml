@@ -12,20 +12,27 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <RelativeLayout
+        <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/top_bar">
-            <include layout="@layout/top_bar"/>
-        </RelativeLayout>
+            android:layout_height="90dp"
+            android:layout_alignParentTop="true"
+            android:id="@+id/topbar">
+                <androidx.appcompat.widget.Toolbar
+                    android:layout_width="match_parent"
+                    android:background="@drawable/top_bar_border"
+                    android:layout_height="match_parent"
+                    android:id="@+id/toolbar"
+                    app:labelVisibilityMode="unlabeled">
+                </androidx.appcompat.widget.Toolbar>
+            </FrameLayout>
 
             <FrameLayout
                 android:id="@+id/container"
-                android:layout_below="@+id/top_bar"
+                android:layout_below="@+id/topbar"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_above="@+id/BottomNav"
-                />
+                android:layout_above="@+id/BottomNav"/>
+
 
         <com.google.android.material.bottomnavigation.BottomNavigationView
             android:layout_width="match_parent"

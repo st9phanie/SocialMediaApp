@@ -1,10 +1,13 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
     <style name="Base.Theme.Cap" parent="Theme.AppCompat.Light.NoActionBar">
-        <item name="colorPrimary">@color/blue</item>
         <item name="itemIconTint">@color/icon</item>
 
     </style>
 
     <style name="Theme.Cap" parent="Base.Theme.Cap" />
+    <style name="roundedImageViewRounded">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">50%</item>
+    </style>
 </resources>

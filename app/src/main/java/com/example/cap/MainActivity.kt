@@ -1,33 +1,34 @@
 package com.example.cap
 
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
+import android.view.LayoutInflater
+import android.view.Menu
 import android.view.Window
+import android.widget.FrameLayout
 import androidx.activity.enableEdgeToEdge
-import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
+import androidx.core.content.ContentProviderCompat.requireContext
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.example.cap.databinding.ActivityMainBinding
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class MainActivity : AppCompatActivity() {
-    private lateinit var recyclerView: RecyclerView
     private lateinit var binding: ActivityMainBinding
-    private lateinit var postAdapter: PostAdapter
     private lateinit var bottomNav: BottomNavigationView
+    private lateinit var toolbar: Toolbar
 
     override fun onCreate(savedInstanceState: Bundle?) {
         enableEdgeToEdge()
         super.onCreate(savedInstanceState)
         window.requestFeature(Window.FEATURE_NO_TITLE)
-        getSupportActionBar()?.hide()
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(R.layout.activity_main)
+
         bottomNav = findViewById(R.id.BottomNav) as BottomNavigationView
+        toolbar = findViewById(R.id.toolbar)
+        setSupportActionBar(toolbar)
 
         bottomNav.setOnItemSelectedListener {
             when(it.itemId) {
@@ -37,6 +38,7 @@ class MainActivity : AppCompatActivity() {
                 R.id.ic_search -> replaceFragment(SearchFragment()) }
             true
         }
+        bottomNav.selectedItemId = R.id.ic_house
 
     }
 
@@ -45,5 +47,11 @@ class MainActivity : AppCompatActivity() {
         transaction.replace(R.id.container,fragment)
         transaction.commit()
     }
+    fun setToolbarLayout(layoutRes: Int) {
+            val toolbarContainer = findViewById<FrameLayout>(R.id.topbar)
+            val inflater = LayoutInflater.from(this)
+            toolbarContainer.removeAllViews()
+            val newToolbar = inflater.inflate(layoutRes, toolbarContainer, true)
 
+    }
 }

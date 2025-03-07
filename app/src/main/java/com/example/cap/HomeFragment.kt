@@ -10,7 +10,6 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import com.example.cap.databinding.ActivityMainBinding
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -68,6 +67,8 @@ class HomeFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
     }
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        (activity as? MainActivity)?.setToolbarLayout(R.layout.top_bar)
+
         val posts = listOf(
             Post("dn", "Alice", "Hello, world!", "10:00 AM"),
             Post("dn", "Bob", "This is my first tweet.", "10:15 AM"),

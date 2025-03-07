@@ -2,18 +2,19 @@
 <merge xmlns:android="http://schemas.android.com/apk/res/android">
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="70dp"
+        android:layout_height="90dp"
         android:layout_alignParentTop="true">
 
         <com.google.android.material.appbar.AppBarLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
-            <com.google.android.material.tabs.TabLayout
+            <Toolbar
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:background="@drawable/top_bar_border"
                 android:id="@+id/Tabs">
 
-            </com.google.android.material.tabs.TabLayout>
+            </Toolbar>
         </com.google.android.material.appbar.AppBarLayout>
     </RelativeLayout>
 </merge>

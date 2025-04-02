@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/tweetContainer"
-        android:orientation="vertical"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="8dp">
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/tweetContainer"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="8dp"
+    android:background="@drawable/top_bar_border">
 
-        <!-- Tweet 1 -->
         <LinearLayout
             android:orientation="vertical"
             android:layout_width="match_parent"
@@ -23,21 +24,23 @@
                 android:weightSum="1">
 
                 <!-- Profile Image -->
-                <ImageView
-                    android:id="@+id/profileImage1"
+                <com.google.android.material.imageview.ShapeableImageView
+                    android:id="@+id/profilepic"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
-                    android:src="@drawable/ic_launcher_foreground"
-                    android:layout_marginEnd="8dp"
-                    android:layout_gravity="center_vertical"
-                    android:contentDescription="Profile Image"
-                    android:layout_weight="0"/>
+                    android:src="@drawable/nfr"
+                    app:shapeAppearanceOverlay="@style/roundedImageViewRounded">
+
+                </com.google.android.material.imageview.ShapeableImageView>
+
 
                 <!-- User Name & Handle -->
                 <LinearLayout
                     android:orientation="vertical"
                     android:layout_width="wrap_content"
+                    android:layout_gravity="center_vertical"
                     android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
                     android:layout_weight="1">
 
                     <TextView
@@ -46,6 +49,7 @@
                         android:layout_height="wrap_content"
                         android:text="John Doe"
                         android:textStyle="bold"
+                        android:textColor="@color/black"
                         android:textSize="16sp"/>
 
                     <TextView
@@ -53,8 +57,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="username"
-                        android:textSize="14sp"
-                        android:textColor="@android:color/darker_gray"/>
+                        android:textSize="14sp"></TextView>
                 </LinearLayout>
             </LinearLayout>
 
@@ -63,8 +66,10 @@
                 android:id="@+id/content"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
                 android:text="This is a tweet content. #example #tweet"
                 android:textSize="16sp"
+                android:textColor="@color/black"
                 android:layout_marginBottom="8dp"/>
 
             <!-- Timestamp -->
@@ -74,7 +79,6 @@
                 android:layout_height="wrap_content"
                 android:text="2 hours ago"
                 android:textSize="12sp"
-                android:textColor="@android:color/darker_gray"
                 android:layout_marginBottom="8dp"/>
 
         </LinearLayout>

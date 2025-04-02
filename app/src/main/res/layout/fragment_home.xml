@@ -1,11 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".HomeFragment">
-
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".HomeFragment"
+    android:theme="@style/Theme.AppCompat.Light.NoActionBar">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="90dp"
+        android:layout_alignParentTop="true"
+        android:id="@+id/topbar">
+        <Toolbar
+            android:layout_width="match_parent"
+            android:background="@drawable/top_bar_border"
+            android:layout_height="match_parent"
+            android:id="@+id/toolbar"
+            app:labelVisibilityMode="unlabeled">
+        </Toolbar>
+    </FrameLayout>
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -18,5 +35,5 @@
             android:layout_alignParentStart="true"
             android:background="@color/white"/>
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
-
+    </LinearLayout>
 </FrameLayout>

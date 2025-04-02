@@ -6,29 +6,16 @@
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
-    tools:context=".MainActivity">
+    tools:context=".MainActivity"
+    android:theme="@style/Theme.AppCompat.Light.NoActionBar">
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="90dp"
-            android:layout_alignParentTop="true"
-            android:id="@+id/topbar">
-                <androidx.appcompat.widget.Toolbar
-                    android:layout_width="match_parent"
-                    android:background="@drawable/top_bar_border"
-                    android:layout_height="match_parent"
-                    android:id="@+id/toolbar"
-                    app:labelVisibilityMode="unlabeled">
-                </androidx.appcompat.widget.Toolbar>
-            </FrameLayout>
 
             <FrameLayout
                 android:id="@+id/container"
-                android:layout_below="@+id/topbar"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_above="@+id/BottomNav"/>

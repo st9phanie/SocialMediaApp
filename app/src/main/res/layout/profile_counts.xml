@@ -1,13 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<merge xmlns:android="http://schemas.android.com/apk/res/android"
+<merge xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
  <androidx.constraintlayout.widget.ConstraintLayout
      android:layout_width="match_parent"
      android:layout_height="wrap_content"
-     android:paddingTop="50dp"
      android:layout_centerHorizontal="true">
-
-
      <TextView
          android:id="@+id/post_count"
          android:layout_width="wrap_content"
@@ -15,22 +13,20 @@
          android:text="0"
          android:textAlignment="center"
          android:textColor="@color/black"
-         android:textSize="20sp"
+         android:textSize="24sp"
          android:textStyle="bold"
          app:flow_verticalAlign="top"
-         app:layout_constraintEnd_toEndOf="@+id/posts_text"
-         app:layout_constraintLeft_toLeftOf="parent"
-
          app:layout_constraintStart_toStartOf="@+id/posts_text"
+         app:layout_constraintLeft_toLeftOf="parent"
          app:layout_constraintTop_toTopOf="parent" />
      <TextView
          android:layout_width="wrap_content"
          android:layout_height="wrap_content"
-         android:text="Posts"
+         android:text="@string/posts"
          app:layout_constraintTop_toBottomOf="@+id/post_count"
          android:id="@+id/posts_text"
          app:layout_constraintLeft_toLeftOf="parent"
-         android:textSize="16sp"
+         android:textSize="18sp"
          />
 
      <TextView
@@ -40,9 +36,8 @@
          android:text="0"
          android:textAlignment="center"
          android:textColor="@color/black"
-         android:textSize="20sp"
+         android:textSize="24sp"
          android:textStyle="bold"
-         app:layout_constraintEnd_toEndOf="@+id/followers_text"
          app:layout_constraintLeft_toLeftOf="parent"
          app:layout_constraintRight_toRightOf="parent"
          app:layout_constraintStart_toStartOf="@+id/followers_text"
@@ -53,7 +48,7 @@
          android:layout_width="wrap_content"
          android:layout_height="wrap_content"
          android:text="Followers"
-         android:textSize="16sp"
+         android:textSize="18sp"
          app:layout_constraintEnd_toStartOf="@+id/following_text"
          app:layout_constraintLeft_toLeftOf="@id/posts_text"
          app:layout_constraintRight_toRightOf="@id/following_text"
@@ -67,9 +62,8 @@
          android:text="0"
          android:textAlignment="center"
          android:textColor="@color/black"
-         android:textSize="20sp"
+         android:textSize="24sp"
          android:textStyle="bold"
-         app:layout_constraintEnd_toEndOf="@+id/following_text"
          app:layout_constraintRight_toRightOf="parent"
          app:layout_constraintStart_toStartOf="@+id/following_text"
          app:layout_constraintTop_toTopOf="parent" />
@@ -80,10 +74,7 @@
          android:id="@+id/following_text"
          app:layout_constraintTop_toBottomOf="@+id/following_count"
          app:layout_constraintRight_toRightOf="parent"
-         android:textSize="16sp"
+         android:textSize="18sp"
          />
-
-
-
  </androidx.constraintlayout.widget.ConstraintLayout>
 </merge>

@@ -1,19 +1,22 @@
 package com.example.cap
 
-import android.content.Context
-import android.content.Intent
 import android.os.Bundle
-import androidx.fragment.app.Fragment
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.ImageButton
 import android.widget.TextView
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
+import com.google.firebase.firestore.QuerySnapshot
+
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -22,16 +25,19 @@ private const val ARG_PARAM2 = "param2"
 
 /**
  * A simple [Fragment] subclass.
- * Use the [ProfileFragment.newInstance] factory method to
+ * Use the [OthersProfile.newInstance] factory method to
  * create an instance of this fragment.
  */
-class ProfileFragment : Fragment(){
+class OthersProfile : Fragment() {
     // TODO: Rename and change types of parameters
     private var param1: String? = null
+    private var userId: String? = null
+    private var username: String? = null
     private var param2: String? = null
     private lateinit var recyclerView: RecyclerView
     private lateinit var postAdapter: PostAdapter
-    private lateinit var editProfileBtn: Button
+    private lateinit var followBtn: Button
+    private lateinit var backBtn: ImageButton
     private lateinit var displayNameTextView: TextView
     private lateinit var bioTextView: TextView
     private lateinit var usernameTextView: TextView
@@ -45,6 +51,8 @@ class ProfileFragment : Fragment(){
         arguments?.let {
             param1 = it.getString(ARG_PARAM1)
             param2 = it.getString(ARG_PARAM2)
+            userId = it.getString("uid")  // Get UID
+            username = it.getString("username")
         }
     }
 
@@ -52,8 +60,8 @@ class ProfileFragment : Fragment(){
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-
-        return inflater.inflate(R.layout.fragment_profile, container, false)
+        // Inflate the layout for this fragment
+        return inflater.inflate(R.layout.fragment_others_profile, container, false)
     }
 
     companion object {
@@ -63,12 +71,12 @@ class ProfileFragment : Fragment(){
          *
          * @param param1 Parameter 1.
          * @param param2 Parameter 2.
-         * @return A new instance of fragment ProfileFragment.
+         * @return A new instance of fragment OthersProfile.
          */
         // TODO: Rename and change types and number of parameters
         @JvmStatic
         fun newInstance(param1: String, param2: String) =
-            ProfileFragment().apply {
+            OthersProfile().apply {
                 arguments = Bundle().apply {
                     putString(ARG_PARAM1, param1)
                     putString(ARG_PARAM2, param2)
@@ -77,33 +85,52 @@ class ProfileFragment : Fragment(){
     }
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        editProfileBtn = view.findViewById(R.id.edit_profile_btn)
+        followBtn = view.findViewById(R.id.follow_btn)
         displayNameTextView = view.findViewById(R.id.displayName)
         bioTextView = view.findViewById(R.id.bio)
         usernameTextView = view.findViewById(R.id.username)
         postsCount = view.findViewById(R.id.post_count)
+        backBtn = view.findViewById(R.id.backBtn)
 
         auth = FirebaseAuth.getInstance()
         db = FirebaseFirestore.getInstance()
-        val sharedPref = requireActivity().getSharedPreferences("UserPrefs", Context.MODE_PRIVATE)
-        usernameTextView.text = sharedPref.getString("username", "")
-        displayNameTextView.text = sharedPref.getString("displayName", "")
-        bioTextView.text = sharedPref.getString("bio", "")
 
-        val userId = auth.currentUser?.uid
-        if (userId != null) {
-            loadUserProfile(userId)
-        }
+        usernameTextView.text = username
+/*
+        db.collection("users")
+            .whereEqualTo("username", username)
+            .get()
+            .addOnCompleteListener { task: Task<QuerySnapshot> ->
+                if (task.isSuccessful && !task.result.isEmpty) {
+                    for (document in task.result) {
+                        val userId = document.id // UID is the document ID
+                        Log.d("Firestore", "User ID: $userId")
+                    }
+                }
+            }*/
+
+        userId?.let { loadUserProfile(it) }
         recyclerView = view.findViewById(R.id.recyclerView)
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
         postAdapter = PostAdapter(posts)
         recyclerView.adapter = postAdapter
         if (userId != null) {
-            postsCount.text = loadUserTweets(userId) }
+            postsCount.text = loadUserTweets(userId!!) }
 
-        editProfileBtn.setOnClickListener {
-            val intent = Intent(requireContext(), EditProfileActivity ::class.java)
-            startActivity(intent) }
+        backBtn.setOnClickListener {
+                val fragment = SearchFragment()
+                requireActivity().supportFragmentManager.beginTransaction()
+                    .replace(R.id.container, fragment)
+                    .commit()
+            }
+
+        followBtn.setOnClickListener {
+
+        }
+        }
+
+    private fun followUser(){
+
     }
 
     private fun loadUserProfile(userId: String) {
@@ -117,7 +144,7 @@ class ProfileFragment : Fragment(){
                 if (document.exists()) {
                     val displayName = document.getString("display_name") ?: ""
                     val bio = document.getString("bio") ?: ""
-                    val username = document.getString("username") ?: "No Username"
+                    val username = username ?: "No Username"
                     if (usernameTextView != null) {
                         usernameTextView.text = username
                     }
@@ -127,20 +154,9 @@ class ProfileFragment : Fragment(){
                     if (bioTextView != null) {
                         bioTextView.text = bio
                     }
-                    saveToPreferences(username,displayName,bio)
                 }
             }
     }
-    private fun saveToPreferences(username: String, displayName: String, bio: String) {
-        activity?.let {
-            val sharedPref = it.getSharedPreferences("UserPrefs", Context.MODE_PRIVATE)
-            with(sharedPref.edit()) {
-                putString("username", username)
-                putString("displayName", displayName)
-                putString("bio", bio)
-                apply()
-            }
-        }}
 
     private fun loadUserTweets(userId: String): String {
         db.collection("text_post")
@@ -158,8 +174,8 @@ class ProfileFragment : Fragment(){
                             posts.add(tweet)
                         }
                         postAdapter.notifyDataSetChanged()
-                                    }
-                                }
-                        }
-                    return posts.size.toString()}
+                    }
                 }
+            }
+        return posts.size.toString()}
+}

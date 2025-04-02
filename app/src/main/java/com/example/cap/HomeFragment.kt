@@ -67,29 +67,7 @@ class HomeFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
     }
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        (activity as? MainActivity)?.setToolbarLayout(R.layout.top_bar)
 
-        val posts = listOf(
-            Post("dn", "Alice", "Hello, world!", "10:00 AM"),
-            Post("dn", "Bob", "This is my first tweet.", "10:15 AM"),
-            Post("dn", "Bob", "This is my first tweet.", "10:15 AM"),
-            Post("dn", "Charlie", "Kotlin is awesome!", "10:30 AM"),
-            Post("dn", "Charlie", "Kotlin is awesome!", "10:30 AM"),
-            Post("dn", "Charlie", "Kotlin is awesome!", "10:30 AM"),
-            Post("dn", "Bob", "This is my first tweet.", "10:15 AM"),
-            Post("dn", "Charlie", "Kotlin is awesome!", "10:30 AM"),
-            Post("dn", "Charlie", "Kotlin is awesome!", "10:30 AM"),
-            Post("dn", "Charlie", "Kotlin is awesome!", "10:30 AM"),
-            Post("dn", "Charlie", "Kotlin is awesome!", "10:30 AM"),
-            Post("dn", "Charlie", "Kotlin is awesome!", "10:30 AM"),
-            Post("dn", "Charlie", "Kotlin is awesome!", "10:30 AM"),
-            Post("dn", "Charlie", "Kotlin is awesome!", "10:30 AM")
-        )
-        val recyclerView = view.findViewById<RecyclerView>(R.id.recyclerView)
-        recyclerView.layoutManager = LinearLayoutManager(requireContext())
-
-        postAdapter = PostAdapter(posts)
-        recyclerView.adapter = postAdapter
     }
     override fun onRefresh() {
         Handler(Looper.getMainLooper()).postDelayed({

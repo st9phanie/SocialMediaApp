@@ -4,48 +4,122 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".ProfileFragment">
-
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+    tools:context=".ProfileFragment"
+    android:background="@color/gray90"
+    android:theme="@style/Theme.AppCompat.Light.NoActionBar">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:paddingTop="20dp"
-            android:weightSum="100"
-            android:background="@drawable/top_bar_border">
+            android:orientation="vertical">
+
             <RelativeLayout
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_marginStart="30dp"
-                android:layout_weight="25">
+                android:layout_width="match_parent"
+                android:layout_height="90dp"
+                android:id="@+id/main">
+
+                <com.google.android.material.appbar.AppBarLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/top_bar_border"
+                    android:id="@+id/appbar">
+                    <Toolbar
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:id="@+id/profileToolbar">
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical"
+                            android:text=""
+                            android:textSize="24sp"
+                            android:paddingTop="20dp"
+                            android:textColor="@color/black"
+                            android:textStyle="bold"
+                            android:layout_marginStart="20dp"
+                            android:id="@+id/username"/>
+
+                    </Toolbar>
+                </com.google.android.material.appbar.AppBarLayout>
+            </RelativeLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingStart="30dp"
+                android:paddingEnd="30dp"
+                android:paddingTop="10dp"
+                android:id="@+id/linlay1"
+                android:background="@color/gray90">
 
                 <com.google.android.material.imageview.ShapeableImageView
                     android:id="@+id/profilepic"
-                    android:layout_width="80dp"
-                    android:layout_height="80dp"
-                    android:src="@drawable/square"
-                    android:layout_alignParentBottom="true"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    app:strokeWidth="0.1dp"
+                    app:strokeColor="@color/gray75"
+                    android:src="@drawable/nfr"
                     app:shapeAppearanceOverlay="@style/roundedImageViewRounded">
 
                 </com.google.android.material.imageview.ShapeableImageView>
-            </RelativeLayout>
 
-            <RelativeLayout
-                android:layout_width="0dp"
-                android:layout_toEndOf="@+id/profilepic"
-                android:id="@+id/pfcounts"
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="40dp"
+                    android:layout_marginEnd="30dp"
+                    android:layout_gravity="center_vertical">
+                    <include layout="@layout/profile_counts"/>
+                </RelativeLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="30dp"
-                android:layout_marginStart="30dp"
-                android:layout_weight="75">
-                <include layout="@layout/profile_counts"/>
+                android:paddingTop="20dp"
+                android:paddingStart="30dp"
+                android:paddingEnd="30dp"
+                android:orientation="vertical"
+                android:id="@+id/linlay2"
+                android:background="@drawable/top_bar_border"
+                android:paddingBottom="20dp">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text=""
+                    android:id="@+id/displayName"
+                    android:textColor="@color/black"
+                    android:textStyle="bold"
+                    android:textSize="18sp"
+                    android:fontFamily="sans-serif"/>
 
-            </RelativeLayout>
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:textSize="16sp"
+                    android:id="@+id/bio"
+                    android:layout_marginTop="5dp"
+                    android:textColor="@color/black"
+                    android:text="" />
+
+                <Button
+                    android:layout_marginTop="15dp"
+                    android:layout_width="match_parent"
+                    android:id="@+id/edit_profile_btn"
+                    android:layout_height="40dp"
+                    android:text="@string/edit_profile"
+                    android:textAllCaps="false"
+                    android:textStyle="bold"
+                    android:textSize="16sp"
+                    android:background="@drawable/btn_borders"/>
+            </LinearLayout>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/recyclerView"
+                android:background="@color/gray90"
+                 />
         </LinearLayout>
-    </RelativeLayout>
 
 </FrameLayout>

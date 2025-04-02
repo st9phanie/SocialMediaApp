@@ -1,7 +1,9 @@
 package com.example.cap
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.util.Patterns
 import android.widget.Button
 import android.widget.EditText
@@ -11,12 +13,10 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import com.google.firebase.Firebase
 import com.google.firebase.FirebaseApp
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.core.View
-import com.google.firebase.firestore.firestore
 
 class SignUp : AppCompatActivity() {
     private lateinit var email: EditText
@@ -25,14 +25,20 @@ class SignUp : AppCompatActivity() {
     private lateinit var btn_signup: Button
     private lateinit var auth: FirebaseAuth
     private lateinit var loginText: TextView
-
+    private lateinit var userID: String
+    private lateinit var db: FirebaseFirestore
+    private lateinit var usersRef: CollectionReference
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         getSupportActionBar()?.hide()
         enableEdgeToEdge()
         setContentView(R.layout.activity_sign_up)
+        FirebaseApp.initializeApp(this)
         auth = FirebaseAuth.getInstance()
+        db = FirebaseFirestore.getInstance()
+        usersRef = db.collection("users")
+
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
@@ -49,15 +55,15 @@ class SignUp : AppCompatActivity() {
             val username  = username.text.toString()
             val email  = email.text.toString()
             val password = password.text.toString()
-            signUp(email,password)
+            signUp(email,password,username)
         }
 
         loginText.setOnClickListener {
             val intent = Intent(this, Login ::class.java)
             startActivity(intent)}
     }
-    private fun signUp(email:String, password:String){
-        if (email.isEmpty() || password.isEmpty()) {
+    private fun signUp(email: String, password: String, username: String) {
+        if (email.isEmpty() || password.isEmpty() || username.isEmpty()) {
             Toast.makeText(this, "Please enter both email and password", Toast.LENGTH_SHORT).show()
             return
         }
@@ -65,22 +71,90 @@ class SignUp : AppCompatActivity() {
             Toast.makeText(this, "Invalid email format", Toast.LENGTH_SHORT).show()
             return
         }
-        if (password.length < 6) {
-            Toast.makeText(this, "Password should be at least 6 characters", Toast.LENGTH_SHORT).show()
-            return
-        }
-        else{
-            auth.createUserWithEmailAndPassword(email, password)
-                .addOnCompleteListener(this) { task ->
-                    if (task.isSuccessful) {
-                        val intent = Intent(this@SignUp,MainActivity::class.java)
-                        startActivity(intent)
 
+        // Check if username exists first
+        checkIfUsernameExists(username, this) { exists ->
+            if (exists) {
+                // Username already taken
+                Toast.makeText(this, "Username is already taken", Toast.LENGTH_SHORT).show()
+            } else {
+                // Proceed with user creation if username is available
+                auth.createUserWithEmailAndPassword(email, password)
+                    .addOnCompleteListener(this) { task ->
+                        if (task.isSuccessful) {
+                            val user = auth.currentUser
+                            user?.sendEmailVerification()?.addOnCompleteListener { emailTask ->
+                                if (emailTask.isSuccessful) {
+                                    Toast.makeText(this, "Verification email sent. Please check your email.", Toast.LENGTH_LONG).show()
+                                    Log.d("Auth", "Verification email sent.")
+
+                                    // Start checking email verification status
+                                    checkEmailVerification(user.uid, email, username)
+
+                                } else {
+                                    Log.e("Auth", "Failed to send verification email.", emailTask.exception)
+                                }
+                            }
+                        } else {
+                            Toast.makeText(this, "Sign-up failed", Toast.LENGTH_SHORT).show()
+                        }
+                    }
+            }
+        }
+    }
+
+    private fun checkIfUsernameExists(username: String, context: Context, callback: (Boolean) -> Unit){
+        usersRef.whereEqualTo("username", username).get()
+            .addOnSuccessListener { querySnapshot ->
+                if (!querySnapshot.isEmpty) {
+                    // Username is taken
+                    callback(true)
+                } else {
+                    callback(false)
+                }
+            }
+            .addOnFailureListener { e ->
+                Log.e("Firestore", "Error checking username", e)
+                Toast.makeText(context, "Error checking username", Toast.LENGTH_SHORT).show()
+                callback(false)
+            }
+}
+
+    private fun checkEmailVerification(userID: String, email: String, username: String) {
+        val user = auth.currentUser
+        val handler = android.os.Handler()
+        val delayMillis: Long = 3000 // Check every 3 seconds
+
+        val verificationChecker = object : Runnable {
+            override fun run() {
+                user?.reload()?.addOnSuccessListener {
+                    if (user.isEmailVerified) {
+                        Toast.makeText(this@SignUp, "Email verified!", Toast.LENGTH_SHORT).show()
+                        addUserToFirestore(userID, email, username)
                     } else {
-                        Toast.makeText(this@SignUp,"Some error occurred",Toast.LENGTH_SHORT).show()
+                        handler.postDelayed(this, delayMillis)
                     }
                 }
-        }}
+            }
+        }
+
+        handler.postDelayed(verificationChecker, delayMillis)
+    }
+
+    private fun addUserToFirestore(userID: String, email: String, username: String) {
+        val user = User(userID, email, username)
+
+        usersRef.document(userID).set(user)
+            .addOnCompleteListener { firestoreTask ->
+                if (firestoreTask.isSuccessful) {
+                    Log.d("Firestore", "User successfully added to Firestore!")
+                    startActivity(Intent(this, MainActivity::class.java))
+                } else {
+                    Log.e("Firestore", "Error writing user document", firestoreTask.exception)
+                }
+            }
+    }
+
 
 }
 

@@ -1,10 +1,12 @@
 package com.example.cap
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.Window
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.ui.platform.LocalContext
 import androidx.fragment.app.Fragment
 import com.example.cap.databinding.ActivityMainBinding
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -50,25 +52,30 @@ class MainActivity : AppCompatActivity() {
                 .addOnSuccessListener { document ->
                     if (document.exists()) {
                         bundle.putString("username", document.getString("username"))
-                    }}
-        }
-        bundle.putString("UID", userId)
+                    }
+        bundle.putString("uid", userId)
 
         fragment.arguments = bundle
         val transaction = supportFragmentManager.beginTransaction()
         transaction.replace(R.id.container,fragment)
-        transaction.commit()
+        transaction.commitAllowingStateLoss()}
+}
     }
 
     var authStateListener: AuthStateListener =
         AuthStateListener { firebaseAuth ->
             val firebaseUser = firebaseAuth.currentUser
             if (firebaseUser == null) {
+                val prefs = getSharedPreferences("app_prefs", Context.MODE_PRIVATE)
+                prefs.edit().clear().apply()
                 val intent = Intent(
                     this@MainActivity,
                     Login::class.java
                 )
+                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+
                 startActivity(intent)
+                finish()
             }
         }
     override fun onStart() {

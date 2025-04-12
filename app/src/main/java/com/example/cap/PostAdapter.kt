@@ -2,6 +2,9 @@ package com.example.cap
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
+import android.widget.ImageButton
+import android.widget.PopupMenu
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 class PostAdapter(private val posts: List<Post>) : RecyclerView.Adapter<PostAdapter.PostViewHolder>() {
@@ -11,6 +14,7 @@ class PostAdapter(private val posts: List<Post>) : RecyclerView.Adapter<PostAdap
         val username: TextView = itemView.findViewById(R.id.username)
         val content: TextView = itemView.findViewById(R.id.content)
         val timestamp: TextView = itemView.findViewById(R.id.time)
+
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PostViewHolder {
@@ -33,10 +37,21 @@ class PostAdapter(private val posts: List<Post>) : RecyclerView.Adapter<PostAdap
         val seconds = diff / 1000
         val minutes = seconds / 60
         val hours = minutes / 60
+        val days = hours / 24
+        val weeks = days / 7
+
         return when {
-            hours > 0 -> "$hours hours ago"
-            minutes > 0 -> "$minutes minutes ago"
-            else -> "Just now"
+            seconds < 60 -> "Just now"
+            minutes < 60 -> "$minutes ${if (minutes == 1L) "minute" else "minutes"} ago"
+            hours < 24 -> "$hours ${if (hours == 1L) "hour" else "hours"} ago"
+            days < 7 -> "$days ${if (days == 1L) "day" else "days"} ago"
+            weeks < 4 -> "$weeks ${if (weeks == 1L) "week" else "weeks"} ago"
+            else -> "More than a month ago"
         }
     }
+
+    private fun deletePost(){
+
+    }
+
 }

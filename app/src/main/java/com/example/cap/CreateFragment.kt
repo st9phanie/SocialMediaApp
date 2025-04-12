@@ -136,9 +136,9 @@ class CreateFragment : Fragment() {
         val userDocRef = db.collection("user_profile_info").document(userId)
         userDocRef.get().addOnSuccessListener { document ->
             if (document.exists()) {
-                val currentPostCount = document.getLong("posts") ?: 0
-                val newPostCount = currentPostCount + 1
-                userDocRef.update("posts", newPostCount)
+                val currentPostCount = document.getString("posts") ?: "0"
+                val newPostCount = currentPostCount.toInt() + 1
+                userDocRef.update("posts", newPostCount.toString())
 
             } else {
                 userDocRef.set(hashMapOf("posts" to 0))

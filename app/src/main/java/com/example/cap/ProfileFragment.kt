@@ -8,7 +8,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.ImageButton
 import android.widget.TextView
+import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.auth.FirebaseAuth
@@ -20,31 +22,32 @@ import com.google.firebase.firestore.Query
 private const val ARG_PARAM1 = "param1"
 private const val ARG_PARAM2 = "param2"
 
-/**
- * A simple [Fragment] subclass.
- * Use the [ProfileFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class ProfileFragment : Fragment(){
-    // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
     private lateinit var recyclerView: RecyclerView
-    private lateinit var postAdapter: PostAdapter
+    private lateinit var postAdapter: MyPostAdapter
     private lateinit var editProfileBtn: Button
+    private lateinit var more: ImageButton
     private lateinit var displayNameTextView: TextView
     private lateinit var bioTextView: TextView
     private lateinit var usernameTextView: TextView
     private lateinit var auth: FirebaseAuth
+    private var userId: String? = null
     private lateinit var db: FirebaseFirestore
     private var posts = mutableListOf<Post>()
-    private lateinit var postsCount: TextView
+    private lateinit var postCount: TextView
+    private lateinit var followerCountTextView: TextView
+    private lateinit var followingCountTextView: TextView
+
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
             param1 = it.getString(ARG_PARAM1)
             param2 = it.getString(ARG_PARAM2)
+            //username = it.getString("username")
         }
     }
 
@@ -57,15 +60,6 @@ class ProfileFragment : Fragment(){
     }
 
     companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment ProfileFragment.
-         */
-        // TODO: Rename and change types and number of parameters
         @JvmStatic
         fun newInstance(param1: String, param2: String) =
             ProfileFragment().apply {
@@ -81,7 +75,10 @@ class ProfileFragment : Fragment(){
         displayNameTextView = view.findViewById(R.id.displayName)
         bioTextView = view.findViewById(R.id.bio)
         usernameTextView = view.findViewById(R.id.username)
-        postsCount = view.findViewById(R.id.post_count)
+        postCount = view.findViewById(R.id.post_count)
+        followerCountTextView = view.findViewById(R.id.follower_count)
+        followingCountTextView = view.findViewById(R.id.following_count)
+        userId = FirebaseAuth.getInstance().currentUser?.uid
 
         auth = FirebaseAuth.getInstance()
         db = FirebaseFirestore.getInstance()
@@ -89,21 +86,29 @@ class ProfileFragment : Fragment(){
         usernameTextView.text = sharedPref.getString("username", "")
         displayNameTextView.text = sharedPref.getString("displayName", "")
         bioTextView.text = sharedPref.getString("bio", "")
+        postCount.text = sharedPref.getString("posts","")
+        followerCountTextView.text = sharedPref.getString("followerCount","")
+        followingCountTextView.text = sharedPref.getString("followingCount","")
 
-        val userId = auth.currentUser?.uid
-        if (userId != null) {
-            loadUserProfile(userId)
-        }
+        userId?.let { loadUserProfile(it) }
+
         recyclerView = view.findViewById(R.id.recyclerView)
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
-        postAdapter = PostAdapter(posts)
+        postAdapter = MyPostAdapter(posts){ post ->
+            deletePost(post,userId.toString())
+        }
         recyclerView.adapter = postAdapter
-        if (userId != null) {
-            postsCount.text = loadUserTweets(userId) }
+        userId?.let { loadUserPosts(it) }
 
         editProfileBtn.setOnClickListener {
             val intent = Intent(requireContext(), EditProfileActivity ::class.java)
-            startActivity(intent) }
+            startActivity(intent) } }
+    override fun onResume() {
+        super.onResume()
+        userId?.let {
+            loadUserProfile(it)
+            loadUserPosts(it)
+        }
     }
 
     private fun loadUserProfile(userId: String) {
@@ -111,13 +116,22 @@ class ProfileFragment : Fragment(){
         val displayNameTextView = view?.findViewById<TextView>(R.id.displayName)
         val bioTextView = view?.findViewById<TextView>(R.id.bio)
         val postCount = view?.findViewById<TextView>(R.id.post_count)
+        val followingCountTextView = view?.findViewById<TextView>(R.id.following_count)
+        val followerCountTextView = view?.findViewById<TextView>(R.id.follower_count)
 
         db.collection("user_profile_info").document(userId).get()
             .addOnSuccessListener { document ->
                 if (document.exists()) {
                     val displayName = document.getString("display_name") ?: ""
                     val bio = document.getString("bio") ?: ""
-                    val username = document.getString("username") ?: "No Username"
+                    val username = document.getString("username") ?: ""
+                    val posts = document.getString("posts") ?: "0"
+                    val followers = document.get("followers") as? List<*> ?: emptyList<Any>()
+                    val following = document.get("following") as? List<*> ?: emptyList<Any>()
+
+                    val followerCount = followers.size.toString()
+                    val followingCount = following.size.toString()
+
                     if (usernameTextView != null) {
                         usernameTextView.text = username
                     }
@@ -127,22 +141,34 @@ class ProfileFragment : Fragment(){
                     if (bioTextView != null) {
                         bioTextView.text = bio
                     }
-                    saveToPreferences(username,displayName,bio)
+                    if (postCount != null) {
+                        postCount.text = posts
+                    }
+                    if (followerCountTextView != null) {
+                        followerCountTextView.text = followerCount
+                    }
+                    if (followingCountTextView != null) {
+                        followingCountTextView.text = followingCount
+                    }
+                    saveToPreferences(username,displayName,bio,posts,followerCount,followingCount)
                 }
             }
     }
-    private fun saveToPreferences(username: String, displayName: String, bio: String) {
+    private fun saveToPreferences(username: String, displayName: String, bio: String, postCount:String,followerCount:String,followingCount:String) {
         activity?.let {
             val sharedPref = it.getSharedPreferences("UserPrefs", Context.MODE_PRIVATE)
             with(sharedPref.edit()) {
                 putString("username", username)
                 putString("displayName", displayName)
                 putString("bio", bio)
+                putString("posts", postCount)
+                putString("followingCount", followingCount)
+                putString("followerCount", followerCount)
                 apply()
             }
         }}
 
-    private fun loadUserTweets(userId: String): String {
+    private fun loadUserPosts(userId: String) {
         db.collection("text_post")
             .whereEqualTo("uid", userId)
             .orderBy("timestamp", Query.Direction.DESCENDING)
@@ -150,16 +176,37 @@ class ProfileFragment : Fragment(){
                 if (snapshot != null) {
                     posts.clear()
                     for (document in snapshot.documents) {
-                        val tweet = document.toObject(Post::class.java)
+                        val post = document.toObject(Post::class.java)
+                        post?.postID = document.id
 
-                        if (tweet != null) {
-                            tweet.displayName = displayNameTextView.text.toString()
-                            tweet.username = usernameTextView.text.toString()
-                            posts.add(tweet)
+                        if (post != null) {
+                            post.displayName = displayNameTextView.text.toString()
+                            post.username = usernameTextView.text.toString()
+                            posts.add(post)
                         }
                         postAdapter.notifyDataSetChanged()
                                     }
                                 }
                         }
-                    return posts.size.toString()}
-                }
+                    }
+    private fun deletePost(post: Post, userId:String) {
+        FirebaseFirestore.getInstance().collection("text_post")
+            .document(post.postID)
+            .delete()
+            .addOnSuccessListener {
+                Toast.makeText(context, "Post deleted", Toast.LENGTH_SHORT).show()
+                posts.remove(post)
+                postAdapter.notifyDataSetChanged()
+                postCount.text = posts.size.toString()
+                db.collection("user_profile_info").document(userId)
+                    .update("posts", posts.size.toString())
+            }
+            .addOnFailureListener {
+                Toast.makeText(context, "Failed to delete", Toast.LENGTH_SHORT).show()
+            }
+
+
+    }
+
+
+}

@@ -143,6 +143,11 @@ class SignUp : AppCompatActivity() {
 
     private fun addUserToFirestore(userID: String, email: String, username: String) {
         val user = User(userID, email, username)
+        val userinfoRef = db.collection("user_profile_info")
+        val userinfo = hashMapOf(
+            "username" to username,
+            "uid" to userID
+        )
 
         usersRef.document(userID).set(user)
             .addOnCompleteListener { firestoreTask ->
@@ -153,7 +158,10 @@ class SignUp : AppCompatActivity() {
                     Log.e("Firestore", "Error writing user document", firestoreTask.exception)
                 }
             }
-    }
+            userinfoRef.document(userID).set(userinfo)
+
+            }
+
 
 
 }

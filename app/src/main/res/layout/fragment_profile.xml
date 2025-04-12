@@ -58,7 +58,7 @@
                     android:layout_height="100dp"
                     app:strokeWidth="0.1dp"
                     app:strokeColor="@color/gray75"
-                    android:src="@drawable/nfr"
+                    android:src="@drawable/defaultpfp"
                     app:shapeAppearanceOverlay="@style/roundedImageViewRounded">
 
                 </com.google.android.material.imageview.ShapeableImageView>

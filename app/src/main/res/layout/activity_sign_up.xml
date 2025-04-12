@@ -110,7 +110,7 @@
             android:id="@+id/loginText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/mid_purple"
+            android:textColor="@color/blue"
             android:textSize="20sp"
             android:textStyle="bold"
             android:fontFamily="sans-serif-medium"

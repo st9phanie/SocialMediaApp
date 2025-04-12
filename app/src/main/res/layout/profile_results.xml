@@ -16,7 +16,7 @@
         app:strokeColor="@color/gray75"
         app:strokeWidth="1dp"
         android:layout_marginStart="30dp"
-        android:src="@drawable/nfr"
+        android:src="@drawable/defaultpfp"
         app:shapeAppearanceOverlay="@style/roundedImageViewRounded"/>
 <TextView
     android:layout_width="wrap_content"

@@ -3,31 +3,36 @@ package com.example.cap
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.Query
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
+
 private const val ARG_PARAM1 = "param1"
 private const val ARG_PARAM2 = "param2"
 
-/**
- * A simple [Fragment] subclass.
- * Use the [HomeFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
-class HomeFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
-    private lateinit var swipeRefreshLayout: SwipeRefreshLayout
+class HomeFragment : Fragment() {
     private lateinit var recyclerView: RecyclerView
     private lateinit var postAdapter: PostAdapter
-    // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
+    private lateinit var auth: FirebaseAuth
+    private lateinit var db: FirebaseFirestore
+    private lateinit var currentUserId: String
+    private var posts = mutableListOf<Post>()
+    private lateinit var displayNameTextView: TextView
+    private lateinit var usernameTextView: TextView
+    private var lastFeedLoadTime: Long = 0L
+    private val feedRefreshInterval = 2 * 60 * 1000L
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -47,15 +52,6 @@ class HomeFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
     }
 
     companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment HomeFragment.
-         */
-        // TODO: Rename and change types and number of parameters
         @JvmStatic
         fun newInstance(param1: String, param2: String) =
             HomeFragment().apply {
@@ -67,11 +63,92 @@ class HomeFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
     }
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        auth = FirebaseAuth.getInstance()
+        db = FirebaseFirestore.getInstance()
+        displayNameTextView = view.findViewById(R.id.displayName)
+        usernameTextView = view.findViewById(R.id.username)
+        currentUserId = auth.currentUser?.uid.toString()
+        recyclerView = view.findViewById(R.id.recyclerView)
+        recyclerView.layoutManager = LinearLayoutManager(requireContext())
+        postAdapter = PostAdapter(posts)
+        recyclerView.adapter = postAdapter
 
+        loadHomePage()
     }
-    override fun onRefresh() {
-        Handler(Looper.getMainLooper()).postDelayed({
-            swipeRefreshLayout.isRefreshing = false
-        },300)
+
+    private fun getFollowingList(callback: (List<String>) -> Unit) {
+        FirebaseFirestore.getInstance().collection("user_profile_info").document(currentUserId)
+            .get()
+            .addOnSuccessListener { document ->
+                if (document.exists()) {
+                    val followingList = document.get("following") as? List<String> ?: emptyList()
+                    callback(followingList)
+                } else {
+                    callback(emptyList())
+                }
+            }
     }
+
+    private fun loadHomePage() {
+        val currentTime = System.currentTimeMillis()
+        if (currentTime - lastFeedLoadTime < feedRefreshInterval) return
+
+        lastFeedLoadTime = currentTime
+        getFollowingList { followingUsers ->
+            if (followingUsers.isEmpty()) {
+                Log.d("Feed", "No users followed, showing empty feed.")
+                posts.clear()
+                postAdapter.notifyDataSetChanged()
+                return@getFollowingList
+            }
+
+            val db = FirebaseFirestore.getInstance()
+            db.collection("text_post")
+                .whereIn("uid", followingUsers)
+                .orderBy("timestamp", Query.Direction.DESCENDING)
+                .get()
+                .addOnSuccessListener { snapshot ->
+                    val fetchedPosts = mutableListOf<Post>()
+                    val userIdsToFetch = mutableSetOf<String>()
+
+                    snapshot?.documents?.forEach { doc ->
+                        doc.toObject(Post::class.java)?.let { post ->
+                            fetchedPosts.add(post)
+                            userIdsToFetch.add(post.uid)
+                        }
+                    }
+
+                    if (userIdsToFetch.isEmpty()) {
+                        posts.clear()
+                        posts.addAll(fetchedPosts)
+                        postAdapter.notifyDataSetChanged()
+                        return@addOnSuccessListener
+                    }
+
+                    db.collection("user_profile_info")
+                        .whereIn("uid", userIdsToFetch.toList())
+                        .get()
+                        .addOnSuccessListener { userSnapshot ->
+                            val userMap = userSnapshot.documents.associateBy { it.getString("uid") }
+
+                            fetchedPosts.forEach { post ->
+                                val userDoc = userMap[post.uid]
+                                post.displayName = userDoc?.getString("display_name").orEmpty()
+                                post.username = userDoc?.getString("username").orEmpty()
+
+
+                            }
+
+                            posts.clear()
+                            posts.addAll(fetchedPosts)
+                            postAdapter.notifyDataSetChanged()
+                        }
+                }
+                .addOnFailureListener { e ->
+                    Log.e("Feed", "Error fetching posts", e)
+                }
+        }
+    }
+
 }
+

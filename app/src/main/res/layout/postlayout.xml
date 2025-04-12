@@ -23,18 +23,15 @@
                 android:layout_height="wrap_content"
                 android:weightSum="1">
 
-                <!-- Profile Image -->
                 <com.google.android.material.imageview.ShapeableImageView
                     android:id="@+id/profilepic"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
-                    android:src="@drawable/nfr"
+                    android:src="@drawable/defaultpfp"
                     app:shapeAppearanceOverlay="@style/roundedImageViewRounded">
 
                 </com.google.android.material.imageview.ShapeableImageView>
 
-
-                <!-- User Name & Handle -->
                 <LinearLayout
                     android:orientation="vertical"
                     android:layout_width="wrap_content"
@@ -58,10 +55,11 @@
                         android:layout_height="wrap_content"
                         android:text="username"
                         android:textSize="14sp"></TextView>
+
                 </LinearLayout>
+
             </LinearLayout>
 
-            <!-- Tweet Content -->
             <TextView
                 android:id="@+id/content"
                 android:layout_width="match_parent"

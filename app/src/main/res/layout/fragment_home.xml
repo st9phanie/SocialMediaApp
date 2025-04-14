@@ -21,6 +21,14 @@
             android:layout_height="match_parent"
             android:id="@+id/toolbar"
             app:labelVisibilityMode="unlabeled">
+            <ImageButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/dms"
+                android:src="@drawable/inbox"
+                android:background="@color/gray90"
+                android:layout_marginEnd="20dp"
+                android:layout_gravity="right"/>
         </Toolbar>
     </FrameLayout>
         <androidx.recyclerview.widget.RecyclerView

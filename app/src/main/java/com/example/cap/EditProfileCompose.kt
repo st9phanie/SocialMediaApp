@@ -179,13 +179,13 @@ fun EditProfileScreen(
 @Composable
 fun LogoutButton() {
     val context = LocalContext.current
-Box(){
+Box(contentAlignment = Alignment.Center){
     Text(
         text = "Log out",
         modifier = Modifier
             .clickable {
-                FirebaseAuth.getInstance().signOut() // Logout
-                val prefs = context.getSharedPreferences("app_prefs", Context.MODE_PRIVATE)
+                FirebaseAuth.getInstance().signOut()
+                val prefs = context.getSharedPreferences("UserPrefs", Context.MODE_PRIVATE)
                 prefs.edit().clear().apply()
                 val intent = Intent(context, Login::class.java)
                 intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
@@ -223,9 +223,25 @@ fun SmallTopAppBarExample(userID: String, username: String, displayName: String,
                 ) {
 
                 IconButton(onClick = {
-                    updateProfile(userID, username, displayName, bio, context)
-                    val intent = Intent(context, MainActivity::class.java)
-                    context.startActivity(intent)
+                    val db = FirebaseFirestore.getInstance()
+                    db.collection("user_profile_info")
+                        .whereEqualTo("username", username)
+                        .get()
+                        .addOnSuccessListener { documents ->
+                            val usernameTaken = documents.any { it.id != userID }
+
+                            if (usernameTaken) {
+                                Toast.makeText(context, "Username already taken", Toast.LENGTH_SHORT).show()
+                            } else {
+                                updateProfile(userID, username, displayName, bio, context)
+                                val intent = Intent(context, MainActivity::class.java)
+                                context.startActivity(intent)
+                            }
+                        }
+                        .addOnFailureListener {
+                            Toast.makeText(context, "Error checking username", Toast.LENGTH_SHORT).show()
+                        }
+
                 }) {
                     Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
                 }

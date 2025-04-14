@@ -7,6 +7,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     tools:context=".MainActivity"
+    app:layout_behavior="@string/hide_bottom_view_on_scroll_behavior"
     android:theme="@style/Theme.AppCompat.Light.NoActionBar">
 
     <RelativeLayout

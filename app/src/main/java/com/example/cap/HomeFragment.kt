@@ -1,5 +1,6 @@
 package com.example.cap
 
+import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -8,6 +9,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageButton
 import android.widget.TextView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -33,6 +35,7 @@ class HomeFragment : Fragment() {
     private lateinit var usernameTextView: TextView
     private var lastFeedLoadTime: Long = 0L
     private val feedRefreshInterval = 2 * 60 * 1000L
+    private lateinit var dms: ImageButton
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -67,10 +70,19 @@ class HomeFragment : Fragment() {
         db = FirebaseFirestore.getInstance()
         displayNameTextView = view.findViewById(R.id.displayName)
         usernameTextView = view.findViewById(R.id.username)
+        dms = view.findViewById(R.id.dms)
+
+        dms.setOnClickListener {
+            val intent = Intent(requireContext(), DirectMessages::class.java)
+            startActivity(intent)
+        }
+
         currentUserId = auth.currentUser?.uid.toString()
         recyclerView = view.findViewById(R.id.recyclerView)
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
-        postAdapter = PostAdapter(posts)
+        postAdapter = PostAdapter(posts){ userId,username,displayName ->
+            openUserProfile(userId,username, displayName)
+        }
         recyclerView.adapter = postAdapter
 
         loadHomePage()
@@ -80,13 +92,26 @@ class HomeFragment : Fragment() {
         FirebaseFirestore.getInstance().collection("user_profile_info").document(currentUserId)
             .get()
             .addOnSuccessListener { document ->
-                if (document.exists()) {
+                if (document.exists()){
                     val followingList = document.get("following") as? List<String> ?: emptyList()
                     callback(followingList)
                 } else {
                     callback(emptyList())
                 }
             }
+    }
+    private fun openUserProfile(userId: String,username: String,displayName: String) {
+        val fragment = OthersProfile()
+        val bundle = Bundle()
+        bundle.putString("uid", userId)
+        bundle.putString("username", username)
+        bundle.putString("displayName", displayName)
+        fragment.arguments = bundle
+
+        requireActivity().supportFragmentManager.beginTransaction()
+            .replace(R.id.container, fragment)
+            .addToBackStack(null)
+            .commit()
     }
 
     private fun loadHomePage() {

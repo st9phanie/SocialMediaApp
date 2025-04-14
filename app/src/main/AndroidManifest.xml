@@ -15,7 +15,7 @@
         android:theme="@style/Theme.Cap"
         tools:targetApi="31">
         <activity
-            android:name=".EditProfile"
+            android:name=".NewChat"
             android:exported="false" />
         <activity
             android:name=".EditProfileActivity"
@@ -27,10 +27,16 @@
             android:name=".ForgotPassword"
             android:exported="false" />
         <activity
+            android:name=".DirectMessages"
+            android:exported="false" />
+        <activity
             android:name=".SignUp"
             android:exported="false" />
         <activity
             android:name=".Login"
+            android:exported="true" />
+        <activity
+            android:name=".LauncherActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

@@ -4,9 +4,9 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.Window
+import android.widget.ImageButton
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.compose.ui.platform.LocalContext
 import androidx.fragment.app.Fragment
 import com.example.cap.databinding.ActivityMainBinding
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -21,17 +21,18 @@ class MainActivity : AppCompatActivity() {
     private lateinit var auth: FirebaseAuth
     private lateinit var db: FirebaseFirestore
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         enableEdgeToEdge()
         super.onCreate(savedInstanceState)
         window.requestFeature(Window.FEATURE_NO_TITLE)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(R.layout.activity_main)
+
         auth = FirebaseAuth.getInstance()
         db = FirebaseFirestore.getInstance()
 
         bottomNav = findViewById(R.id.BottomNav) as BottomNavigationView
-
         bottomNav.setOnItemSelectedListener {
             when(it.itemId) {
                 R.id.ic_house -> replaceFragment(HomeFragment())
@@ -41,7 +42,6 @@ class MainActivity : AppCompatActivity() {
             true
         }
         bottomNav.selectedItemId = R.id.ic_house
-
     }
 
     private fun replaceFragment(fragment: Fragment) {

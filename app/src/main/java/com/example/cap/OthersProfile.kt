@@ -92,32 +92,40 @@ class OthersProfile : Fragment() {
 
         recyclerView = view.findViewById(R.id.recyclerView)
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
-        postAdapter = PostAdapter(posts)
+        postAdapter = PostAdapter(posts) { userId, username, displayName -> }
         recyclerView.adapter = postAdapter
         otherUserId?.let { loadUserTweets(it) }
 
         backBtn.setOnClickListener {
-                val fragment = SearchFragment()
-                requireActivity().supportFragmentManager.beginTransaction()
-                    .replace(R.id.container, fragment)
-                    .commit() }
-
-        followBtn.setOnClickListener {
-            if (followBtn.text == "Follow"){
-                otherUserId?.let { it1 -> followUser(it1) }
-                followBtn.text = "Unfollow"}
-            else{
-                followBtn.text = "Follow"
-            } }
+            requireActivity().supportFragmentManager.popBackStack()
         }
 
-    private fun followUser(otherUserId:String){
-        val targetUserRef = db.collection("user_profile_info").document(otherUserId)
-        currentUserRef.update("following", FieldValue.arrayUnion(otherUserId))
-        targetUserRef.update("followers", FieldValue.arrayUnion(currentUserId))
+
+        followBtn.setOnClickListener {
+            if (followBtn.text == "Follow") {
+                otherUserId?.let { followUser(it) }
+                followBtn.text = "Unfollow"
+            } else {
+                otherUserId?.let { unfollowUser(it) }
+                followBtn.text = "Follow"
+            }
+        }
     }
 
-    private fun loadUserProfile(userId: String) {
+        private fun followUser(otherUserId: String) {
+            val targetUserRef = db.collection("user_profile_info").document(otherUserId)
+            currentUserRef.update("following", FieldValue.arrayUnion(otherUserId))
+            targetUserRef.update("followers", FieldValue.arrayUnion(currentUserId))
+        }
+
+        private fun unfollowUser(otherUserId: String) {
+            val targetUserRef = db.collection("user_profile_info").document(otherUserId)
+            currentUserRef.update("following", FieldValue.arrayRemove(otherUserId))
+            targetUserRef.update("followers", FieldValue.arrayRemove(currentUserId))
+        }
+
+
+        private fun loadUserProfile(userId: String) {
         val usernameTextView = view?.findViewById<TextView>(R.id.username)
         val displayNameTextView = view?.findViewById<TextView>(R.id.displayName)
         val bioTextView = view?.findViewById<TextView>(R.id.bio)

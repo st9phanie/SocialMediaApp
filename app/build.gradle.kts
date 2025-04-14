@@ -3,7 +3,6 @@ plugins {
     alias(libs.plugins.jetbrains.kotlin.android)
     alias(libs.plugins.google.gms.google.services)
     alias(libs.plugins.compose.compiler)
-
 }
 
 android {
@@ -41,6 +40,8 @@ android {
         viewBinding = true
         compose = true
     }
+
+
 }
 
 dependencies {
@@ -49,9 +50,9 @@ dependencies {
     val composeBom = platform("androidx.compose:compose-bom:2025.02.00")
     implementation(composeBom)
     androidTestImplementation(composeBom)
-    implementation(libs.androidx.ui) // Core UI components
-    implementation(libs.androidx.foundation) // Basic building blocks like Box, Row, Column
-    implementation(libs.androidx.material3) // Material Design 3 (Recommended)
+    implementation(libs.androidx.ui)
+    implementation(libs.androidx.foundation)
+    implementation(libs.androidx.material3)
     implementation("androidx.activity:activity-compose:1.10.0") // Required for using Compose in activities
     implementation(libs.androidx.ui.tooling.preview)
     debugImplementation(libs.androidx.ui.tooling)

@@ -7,7 +7,9 @@ import android.widget.ImageButton
 import android.widget.PopupMenu
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-class PostAdapter(private val posts: List<Post>) : RecyclerView.Adapter<PostAdapter.PostViewHolder>() {
+import com.google.android.material.imageview.ShapeableImageView
+
+class PostAdapter(private val posts: List<Post>,private val onProfileClick: (userId: String, username: String, displayName: String) -> Unit) : RecyclerView.Adapter<PostAdapter.PostViewHolder>() {
 
     class PostViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val displayName: TextView = itemView.findViewById(R.id.displayname)
@@ -28,6 +30,14 @@ class PostAdapter(private val posts: List<Post>) : RecyclerView.Adapter<PostAdap
         holder.username.text = "@${post.username}"
         holder.content.text = post.content
         holder.timestamp.text = getTimeAgo(post.timestamp)
+
+        holder.displayName.setOnClickListener {
+            onProfileClick(post.uid,post.username,post.displayName)
+        }
+
+        holder.username.setOnClickListener {
+            onProfileClick(post.uid,post.username,post.displayName)
+        }
     }
 
     override fun getItemCount() = posts.size

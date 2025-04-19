@@ -1,17 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".ProfileFragment"
     android:background="@color/gray90"
+    android:orientation="vertical"
     android:theme="@style/Theme.AppCompat.Light.NoActionBar">
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
 
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -43,41 +40,43 @@
                 </com.google.android.material.appbar.AppBarLayout>
             </RelativeLayout>
             <LinearLayout
+                android:layout_gravity="center"
+                android:gravity="center"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:paddingStart="30dp"
-                android:paddingEnd="30dp"
                 android:paddingTop="10dp"
                 android:id="@+id/linlay1"
                 android:background="@color/gray90">
 
                 <com.google.android.material.imageview.ShapeableImageView
                     android:id="@+id/profilepic"
-                    android:layout_width="100dp"
-                    android:layout_height="100dp"
-                    app:strokeWidth="0.1dp"
-                    app:strokeColor="@color/gray75"
-                    android:src="@drawable/defaultpfp"
-                    app:shapeAppearanceOverlay="@style/roundedImageViewRounded">
+                    android:layout_width="0dp"
+                android:layout_height="100dp"
+                android:layout_weight="0.25"
 
-                </com.google.android.material.imageview.ShapeableImageView>
+                android:src="@drawable/defaultpfp"
+                app:shapeAppearanceOverlay="@style/roundedImageViewRounded" />
 
                 <RelativeLayout
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="40dp"
-                    android:layout_marginEnd="30dp"
-                    android:layout_gravity="center_vertical">
-                    <include layout="@layout/profile_counts"/>
-                </RelativeLayout>
-            </LinearLayout>
+                    android:layout_marginStart="20dp"
+                    android:layout_marginEnd="20dp"
+                    android:layout_gravity="center_vertical"
+                    android:layout_weight="0.75">
+
+                <include layout="@layout/profile_counts"/>
+            </RelativeLayout>
+
+        </LinearLayout>
+
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingTop="20dp"
-                android:paddingStart="30dp"
+                android:paddingTop="10dp"
+                android:paddingStart="20dp"
                 android:paddingEnd="30dp"
                 android:orientation="vertical"
                 android:id="@+id/linlay2"
@@ -96,7 +95,7 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:textSize="16sp"
+                    android:textSize="18sp"
                     android:id="@+id/bio"
                     android:layout_marginTop="5dp"
                     android:textColor="@color/black"
@@ -110,7 +109,7 @@
                     android:text="@string/edit_profile"
                     android:textAllCaps="false"
                     android:textStyle="bold"
-                    android:textSize="16sp"
+                    android:textSize="18sp"
                     android:background="@drawable/btn_borders"/>
             </LinearLayout>
 
@@ -121,4 +120,3 @@
                 android:background="@color/gray90"
                  />
         </LinearLayout>
-</FrameLayout>

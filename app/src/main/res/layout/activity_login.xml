@@ -43,6 +43,7 @@
         android:textSize="20sp"
         android:inputType="textEmailAddress"
         android:paddingLeft="10dp"
+        android:focusable="true"
         android:paddingRight="10dp"/>
 
     <EditText
@@ -52,6 +53,7 @@
         android:layout_below="@id/loginEmail"
         android:layout_marginTop="15dp"
         android:hint="@string/password"
+        android:focusable="true"
         android:inputType="textPassword"
         android:paddingLeft="10dp"
         android:textSize="20sp"

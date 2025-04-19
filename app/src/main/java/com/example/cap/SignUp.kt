@@ -52,31 +52,47 @@ class SignUp : AppCompatActivity() {
         loginText = findViewById(R.id.loginText)
 
         btn_signup.setOnClickListener {
-            val username  = username.text.toString()
-            val email  = email.text.toString()
-            val password = password.text.toString()
-            signUp(email,password,username)
+            val enteredUsername = username.text.toString().trim()
+            val enteredEmail = email.text.toString().trim()
+            val enteredPassword = password.text.toString().trim()
+
+            if (enteredUsername.isEmpty()) {
+                username.error = "Username cannot be empty"
+                username.requestFocus()
+                return@setOnClickListener
+            }
+
+            if (enteredEmail.isEmpty()) {
+                email.error = "Email cannot be empty"
+                email.requestFocus()
+                return@setOnClickListener
+            }
+
+            if (!Patterns.EMAIL_ADDRESS.matcher(enteredEmail).matches()) {
+                email.error = "Invalid email format"
+                email.requestFocus()
+                return@setOnClickListener
+            }
+
+            if (enteredPassword.isEmpty()) {
+                password.error = "Password cannot be empty"
+                password.requestFocus()
+                return@setOnClickListener
+            }
+
+            signUp(enteredEmail, enteredPassword, enteredUsername)
         }
 
         loginText.setOnClickListener {
             val intent = Intent(this, Login ::class.java)
             startActivity(intent)}
     }
-    private fun signUp(email: String, password: String, username: String) {
-        if (email.isEmpty() || password.isEmpty() || username.isEmpty()) {
-            Toast.makeText(this, "Please enter both email and password", Toast.LENGTH_SHORT).show()
-            return
-        }
-        if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-            Toast.makeText(this, "Invalid email format", Toast.LENGTH_SHORT).show()
-            return
-        }
-
-        // Check if username exists first
-        checkIfUsernameExists(username, this) { exists ->
+    private fun signUp(email: String, password: String, Username: String) {
+             // Check if username exists first
+        checkIfUsernameExists(Username, this) { exists ->
             if (exists) {
-                // Username already taken
-                Toast.makeText(this, "Username is already taken", Toast.LENGTH_SHORT).show()
+                username.error = "Username is already taken"
+                username.requestFocus()
             } else {
                 // Proceed with user creation if username is available
                 auth.createUserWithEmailAndPassword(email, password)
@@ -89,7 +105,7 @@ class SignUp : AppCompatActivity() {
                                     Log.d("Auth", "Verification email sent.")
 
                                     // Start checking email verification status
-                                    checkEmailVerification(user.uid, email, username)
+                                    checkEmailVerification(user.uid, email, Username)
 
                                 } else {
                                     Log.e("Auth", "Failed to send verification email.", emailTask.exception)
@@ -114,8 +130,6 @@ class SignUp : AppCompatActivity() {
                 }
             }
             .addOnFailureListener { e ->
-                Log.e("Firestore", "Error checking username", e)
-                Toast.makeText(context, "Error checking username", Toast.LENGTH_SHORT).show()
                 callback(false)
             }
 }

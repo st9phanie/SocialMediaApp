@@ -1,5 +1,7 @@
 package com.example.cap
 
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.view.Window
 import android.widget.ImageButton
@@ -18,9 +20,13 @@ class DirectMessages : AppCompatActivity() {
         backBtn = findViewById(R.id.backBtn)
         startChat = findViewById(R.id.startChat)
 
-
         backBtn.setOnClickListener {
-            finish()
+            val intent = Intent(this,MainActivity::class.java)
+            startActivity(intent) }
+
+        startChat.setOnClickListener {
+            val intent = Intent(this, NewChat ::class.java)
+            startActivity(intent)
         }
     }
 }

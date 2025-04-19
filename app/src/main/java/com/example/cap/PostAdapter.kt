@@ -10,8 +10,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.imageview.ShapeableImageView
 
 class PostAdapter(private val posts: List<Post>,private val onProfileClick: (userId: String, username: String, displayName: String) -> Unit) : RecyclerView.Adapter<PostAdapter.PostViewHolder>() {
-
     class PostViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+
         val displayName: TextView = itemView.findViewById(R.id.displayname)
         val username: TextView = itemView.findViewById(R.id.username)
         val content: TextView = itemView.findViewById(R.id.content)

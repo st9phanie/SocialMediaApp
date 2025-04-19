@@ -15,7 +15,7 @@
         android:layout_height="wrap_content">
 
 
-            <FrameLayout
+            <androidx.fragment.app.FragmentContainerView
                 android:id="@+id/container"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -24,11 +24,11 @@
 
         <com.google.android.material.bottomnavigation.BottomNavigationView
             android:layout_width="match_parent"
-            android:layout_height="70dp"
+            android:layout_height="100dp"
             android:layout_alignParentBottom="true"
             android:background="@drawable/bottom_nav_border_light"
             android:id="@+id/BottomNav"
-            app:itemIconSize="33dp"
+            app:itemIconSize="32dp"
             app:menu="@menu/bottom_nav_menu"
             app:labelVisibilityMode="unlabeled">
 

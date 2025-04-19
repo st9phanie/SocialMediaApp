@@ -24,7 +24,7 @@
     android:textColor="@color/black"
     android:text="username"
     android:id="@+id/username"
-    android:textSize="18sp"
+    android:textSize="20sp"
     android:layout_marginStart="20dp"
     android:layout_marginEnd="30dp"
     android:textStyle="bold"/>

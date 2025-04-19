@@ -3,13 +3,14 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="blue">#1EA1F3</color>
+    <color name="darkblue">#090963</color>
     <color name="gray90">#FFFDFDFD</color>
     <color name="gray902">#E6E6E6</color>
     <color name="gray75">#FFD9D9D9</color>
     <color name="darkgray">#333333</color>
     <color name="bg">#F9F9F9</color>
     <color name="light_purple">#B2ABDF</color>
-    <color name="mid_purple">#706BA5</color>
-    <color name="dark_purple">#312749</color>
+    <color name="mid_purple">#5667FD</color>
+    <color name="dark_purple">#290153</color>
 
 </resources>

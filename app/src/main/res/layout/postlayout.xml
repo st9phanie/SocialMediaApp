@@ -47,14 +47,14 @@
                         android:text="John Doe"
                         android:textStyle="bold"
                         android:textColor="@color/black"
-                        android:textSize="16sp"/>
+                        android:textSize="18sp"/>
 
                     <TextView
                         android:id="@+id/username"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="username"
-                        android:textSize="14sp"></TextView>
+                        android:textSize="16sp"></TextView>
 
                 </LinearLayout>
 
@@ -66,7 +66,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
                 android:text="This is a tweet content. #example #tweet"
-                android:textSize="16sp"
+                android:textSize="18sp"
                 android:textColor="@color/black"
                 android:layout_marginBottom="8dp"/>
 
@@ -76,7 +76,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="2 hours ago"
-                android:textSize="12sp"
+                android:textSize="14sp"
                 android:layout_marginBottom="8dp"/>
 
         </LinearLayout>

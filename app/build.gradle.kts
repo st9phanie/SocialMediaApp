@@ -9,6 +9,7 @@ android {
     namespace = "com.example.cap"
     compileSdk = 35
 
+
     defaultConfig {
         applicationId = "com.example.cap"
         minSdk = 25
@@ -17,6 +18,9 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        vectorDrawables {
+            useSupportLibrary = true
+        }
     }
 
     buildTypes {
@@ -40,6 +44,15 @@ android {
         viewBinding = true
         compose = true
     }
+    composeOptions {
+        kotlinCompilerExtensionVersion = "1.5.1"
+    }
+    packaging {
+        resources {
+            excludes += "/META-INF/{AL2.0,LGPL2.1}"
+        }
+    }
+
 
 
 }
@@ -47,6 +60,11 @@ android {
 dependencies {
     implementation(libs.androidx.compose.material)
     implementation(libs.androidx.ui.tooling.preview.android)
+    implementation(libs.androidx.lifecycle.runtime.ktx)
+    implementation(libs.androidx.ui.graphics)
+    implementation(libs.androidx.constraintlayout.compose.android)
+    implementation(libs.androidx.navigation.compose)
+    androidTestImplementation(libs.androidx.ui.test.junit4)
     val composeBom = platform("androidx.compose:compose-bom:2025.02.00")
     implementation(composeBom)
     androidTestImplementation(composeBom)
@@ -64,6 +82,8 @@ dependencies {
     implementation(libs.material)
     implementation(libs.androidx.activity)
     implementation(libs.androidx.constraintlayout)
+    implementation(libs.androidx.cardview)
+    implementation(libs.sendbird.android.sdk)
     implementation(libs.google.services)
     implementation(libs.firebase.firestore.ktx)
     implementation(libs.firebase.auth.ktx)
@@ -74,4 +94,5 @@ dependencies {
     implementation(libs.coil.compose)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
+    debugImplementation(libs.androidx.ui.test.manifest)
 }

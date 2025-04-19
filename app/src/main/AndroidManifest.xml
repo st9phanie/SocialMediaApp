@@ -14,8 +14,21 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Cap"
         tools:targetApi="31">
+
+        <activity
+            android:name=".ChannelActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ChannelListActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ChannelCreateActivity"
+            android:exported="false" />
         <activity
             android:name=".NewChat"
+            android:exported="false" />
+        <activity
+            android:name=".FollowersFollowing"
             android:exported="false" />
         <activity
             android:name=".EditProfileActivity"

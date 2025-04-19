@@ -12,6 +12,9 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuth.AuthStateListener
+import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
+import com.google.firebase.auth.FirebaseAuthInvalidUserException
+import com.sendbird.android.SendBird
 
 
 class Login : AppCompatActivity() {
@@ -43,6 +46,9 @@ class Login : AppCompatActivity() {
 
 
         setContentView(R.layout.activity_login)
+
+        SendBird.init("APP_ID_HERE", this)
+
         auth = FirebaseAuth.getInstance()
         val authStateListener =
             AuthStateListener { firebaseAuth ->
@@ -71,9 +77,20 @@ class Login : AppCompatActivity() {
 
 
         btn_login.setOnClickListener {
-            val email = email.text.toString()
-            val password = password.text.toString()
-            login(email,password)}
+            val useremail = email.text.toString()
+            val userpassword = password.text.toString()
+
+            if (useremail.isEmpty()) {
+                email.error = "Email cannot be empty"
+                email.requestFocus()
+                return@setOnClickListener }
+
+            if (userpassword.isEmpty()) {
+                password.error = "Password cannot be empty"
+                password.requestFocus()
+                return@setOnClickListener }
+            login(useremail,userpassword)
+        }
 
         signUpText.setOnClickListener {
             val intent = Intent(this, SignUp ::class.java)
@@ -83,17 +100,26 @@ class Login : AppCompatActivity() {
             startActivity(intent)}
 }
 
-    private fun login(email:String, password:String) {
+    private fun login(email: String, password: String) {
         auth.signInWithEmailAndPassword(email, password)
             .addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
-                    val intent = Intent(this@Login,MainActivity::class.java)
-                    startActivity(intent)
+                    startActivity(Intent(this, MainActivity::class.java))
+                    finish()
                 } else {
-                    Toast.makeText(this@Login,"User does not exist or wrong credentials", Toast.LENGTH_SHORT).show()
+                    val exception = task.exception
+                    val message = when (exception) {
+                        is FirebaseAuthInvalidUserException -> "No account found with this email."
+                        is FirebaseAuthInvalidCredentialsException -> "Incorrect credentials."
+                        else -> exception?.localizedMessage ?: "Login failed. Please try again."
+                    }
+
+                    Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
                 }
             }
     }
+
+
 
     override fun onStart() {
         super.onStart()
@@ -103,6 +129,5 @@ class Login : AppCompatActivity() {
         super.onStop()
         auth.removeAuthStateListener(authStateListener)
     }
-
 
 }

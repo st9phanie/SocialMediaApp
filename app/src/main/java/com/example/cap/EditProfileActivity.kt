@@ -17,8 +17,6 @@ class EditProfileActivity : ComponentActivity() {
 
         enableEdgeToEdge()
         FirebaseApp.initializeApp(this)
-
-        // Initialize Firestore and ViewModel
         profileViewModel = ViewModelProvider(this).get(ProfileViewModel::class.java)
 
         setContent {

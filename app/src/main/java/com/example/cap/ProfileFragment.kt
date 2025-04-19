@@ -100,6 +100,32 @@ class ProfileFragment : Fragment() {
             val intent = Intent(requireContext(), EditProfileActivity::class.java)
             startActivity(intent)
         }
+
+        followerCountTextView.setOnClickListener {
+            val fragment = FollowersFollowing()
+            val bundle = Bundle()
+            bundle.putInt("tabPosition", 0)
+            fragment.arguments = bundle
+
+            requireActivity().supportFragmentManager.beginTransaction()
+                .replace(R.id.container, fragment)
+                .addToBackStack(null)
+                .commit()
+        }
+
+        followingCountTextView.setOnClickListener {
+            val fragment = FollowersFollowing()
+            val bundle = Bundle()
+            bundle.putInt("tabPosition", 0) // 1 = following
+            fragment.arguments = bundle
+
+            requireActivity().supportFragmentManager.beginTransaction()
+                .replace(R.id.container, fragment)
+                .addToBackStack(null)
+                .commit()
+        }
+
+
     }
 
     private fun loadUserProfile(userId: String) {
